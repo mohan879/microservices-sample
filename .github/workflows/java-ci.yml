@@ -15,37 +15,42 @@ jobs:
     name: Build & Test
     runs-on: ubuntu-latest
 
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
+  
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-
       - name: Cache Maven
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven
-
-      - name: Build + Unit Tests + Coverage
+  
+      - name: Build & Run Tests
         run: mvn clean verify
 
-      - name: Upload Test Reports
-        uses: actions/upload-artifact@v4
+  # ✅ UNIT TEST REPORT UI
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v1
+        if: always()
         with:
-          name: test-reports
-          path: target/surefire-reports/
-
+          name: Unit Test Results
+          path: target/surefire-reports/*.xml
+          reporter: java-junit
+  
+  # ✅ COVERAGE REPORT (HTML)
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: target/site/jacoco/
+
 
 # ----------------------------------------
 # 2. CODE QUALITY (SONAR ALTERNATIVE)
