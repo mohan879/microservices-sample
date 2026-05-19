@@ -36,9 +36,11 @@ jobs:
       - name: Build & Run Tests
         run: mvn clean test || true
       
-      - name: Debug (check reports)
+      
+      - name: Debug - Find reports
         run: |
-          echo "Listing generated reports..."
+          echo "Looking for test reports..."
+          find . -name "surefire-reports"
           find . -name "*.xml"
       
       - name: Publish Test Results
@@ -46,8 +48,9 @@ jobs:
         if: always()
         with:
           name: Unit Test Results
-          path: '**/surefire-reports/*.xml'
+          path: '**/target/surefire-reports/*.xml'
           reporter: java-junit
+
 
 
 # ----------------------------------------
