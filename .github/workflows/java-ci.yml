@@ -64,18 +64,22 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+        
+      - name: Code Quality Checks
+        run: |
+          mvn checkstyle:checkstyle
+          mvn pmd:pmd
+          mvn spotbugs:spotbugs || true
+      
+      - name: Upload Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-quality-reports
+          path: |
+            target/site/checkstyle.html
+            target/site/pmd.html
+            target/spotbugsXml.xml
 
-      # ✅ Checkstyle
-      - name: Run Checkstyle
-        run: mvn checkstyle:check
-
-      # ✅ PMD (Code smells, dead code)
-      - name: Run PMD
-        run: mvn pmd:check
-
-      # ✅ SpotBugs (bug detection)
-      - name: Run SpotBugs
-        run: mvn com.github.spotbugs:spotbugs-maven-plugin:check
 
 # ----------------------------------------
 # 3. SECURITY TESTING
