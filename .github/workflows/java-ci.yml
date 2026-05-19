@@ -116,3 +116,4 @@ jobs:
         with:
           name: dependency-report
           path: target/dependency-check-report.html
+          path: target/dependency-check-report.html
